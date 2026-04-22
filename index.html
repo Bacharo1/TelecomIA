@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon IA Documentaire - TelecomIA RAG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-layout">
+    <div class="sidebar">
+        <h2>Gestion PDF</h2>
+        
+        <div class="upload-section">
+            <input type="file" id="pdfFile" accept=".pdf">
+        </div>
+        
+        <div id="progress-container" style="display: none; ">
+            <progress id="upload-progress" value="0" max="100" style="width: 100%;"></progress>
+            <span id="progress-percent">0%</span>
+        </div>
+
+        <button id="btnImport" class="secondary">Importer Document</button>
+
+        <button id="btnResume" class="secondary">Résumé Automatique</button>
+
+        <button id="btnReset" class="secondary">Réinitialiser la Session</button>
+        
+        <hr>
+        
+        <h3>Documents en session</h3>
+        <ul id="listeDocs">
+            </ul>
+
+        <div id="pdfViewerContainer">
+            <h3>Aperçu</h3>
+            <div id="pdfViewer">
+                <p style="color: gray; font-size: 0.8em;">Sélectionnez un document pour le voir</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-area">
+        <div id="chatBox">
+            <div class="ai-msg"><b>TelecomIA:</b> Bonjour ! Chargez un PDF et posez-moi vos questions.</div>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="question" placeholder="Posez une question sur le document...">
+            <button id="btnEnvoyer">Envoyer</button>
+        </div>
+    </div>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>
