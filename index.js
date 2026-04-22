@@ -184,7 +184,35 @@ async function chargerListe() {
     }
 }
 
+///--- FONCTION DE RÉINITIALISATION DE LA SESSION ---
 
+async function reset() {
+    btnReset.disabled = true; // Désactive le bouton pendant la requête
+    btnReset.textContent = "Réinitialisation...";
+
+    try {
+        const response = await fetch(`${API_URL}/clear-session`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (response.ok) {
+            alert("L'IA a oublié les documents précédents !");
+            // Optionnel : recharger la page pour rafraîchir l'affichage
+            window.location.reload();
+        } else {
+            throw new Error("La requête n'a pas abouti.");
+        }
+    } catch (error) {
+        console.error("Erreur lors de la réinitialisation:", error);
+        alert("Erreur lors de la réinitialisation de la session.");
+    } finally {
+        btnReset.disabled = false; // Réactive le bouton après la requête
+        btnReset.textContent = "Réinitialiser";
+    }
+}
 
 
 // --- ÉVÉNEMENTS ---
