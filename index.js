@@ -176,6 +176,9 @@ async function chargerListe() {
                 // Utilisation de la classe CSS .actif (plus propre)
                 document.querySelectorAll('#listeDocs li').forEach(el => el.classList.remove('actif'));
                 li.classList.add('actif');
+
+                const urlApercu = data.url_view || `${API_URL}/documents/${doc}`;
+                pdfViewer.innerHTML = `<embed src="${urlApercu}" width="100%" height="100%" type="application/pdf">`;
             };
             listeDocs.appendChild(li);
         });
