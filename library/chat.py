@@ -19,7 +19,7 @@ router = APIRouter()
 
 @router.post("/interroger")
 async def interroger_document(
-    existing_file: str = Form(...), 
+    existing_file: str = Form(None), 
     question: str = Form(None),
     mode: str = Form("chat")
 ):

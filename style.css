@@ -16,7 +16,25 @@ body {
     height: 100vh; /* Toute la hauteur de l'écran */
     overflow: hidden;
 }
-/* --- Barre latérale (Sidebar) - VERSION COMPLÈTE --- */
+/* --- Barre latérale (Sidebar) --- */
+.btn-titre-refresh {
+    background: none;
+    border: none;
+    color: #3498db; /* Ta couleur bleue actuelle */
+    font-size: 24px; /* À ajuster selon ton design */
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+    transition: opacity 0.2s;
+}
+
+.btn-titre-refresh:hover {
+    opacity: 0.7; /* Petit effet au survol pour montrer que c'est cliquable */
+}
+
+
+
 .sidebar {
     /* Structure */
     width: 350px;
@@ -197,9 +215,33 @@ button {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    position: relative;
+    background-color: white;
 }
 
+#chatBox::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    width: 350px;  /* Taille du logo */
+    height: 350px; 
+    /* Remplace 'logo.png' par le chemin de ton image */
+    background-image: url('images/LOGOTelecomIA.png'); 
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    /* Opacité très basse pour l'effet "filigrane" */
+    opacity: 0.9; 
+    pointer-events: none; /* Permet de cliquer sur les messages à travers le logo */
+    z-index: 0;
+}
+
+
 .ai-msg {
+    position: relative;
+    z-index: 1;
     align-self: flex-start;
     background-color: #f1f0f0;
     padding: 10px 15px;
@@ -209,6 +251,8 @@ button {
 }
 
 .user-msg {
+    position: relative;
+    z-index: 1;
     align-self: flex-end;
     background-color: #3498db;
     color: white;
