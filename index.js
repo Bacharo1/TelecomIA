@@ -49,7 +49,10 @@ const interrogerDocument = async (formData) => {
     }, 200);
 
     try {
-        const response = await fetch(`${API_URL}/import`, {
+        const mode = formData.get("mode"); 
+        const route = (mode === "import") ? "/import" : "/interroger";
+
+        const response = await fetch(`${API_URL}${route}`, {
             method: "POST",
             body: formData
         });
