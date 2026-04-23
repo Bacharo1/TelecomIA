@@ -131,14 +131,7 @@ async function envoyerRequete(mode = "chat") {
         }
             debugger;
 
-        // Mise à jour de la vue document
-        const urlApercu = data.url_view || `${API_URL}/documents/${data.filename}`;
-        pdfViewer.innerHTML = `<embed src="${urlApercu}" width="100%" height="100%" type="application/pdf">`;
-            debugger;
-
-        chargerListe();
-        btnImport.disabled = false;
-            debugger;
+    
 
     }, error => {
         console.error("Erreur lors de l'interrogation:", error);
