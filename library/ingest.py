@@ -58,10 +58,9 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True, sockerRef = None):
         logger.info(f" Loaded {len(raw_docs)} units/pages in {load_time:.2f}s")
         #sockerRef.emit("ingest_status", {"message": f"Loaded {len(raw_docs)} units/pages in {load_time:.2f}s"})
         # Tag Metadata
- # Tag Metadata (DANS ingest.py)
         for doc in raw_docs:
             # On utilise le chemin relatif "storage/pdfs/nom.pdf" pour matcher le main.py
-            doc.metadata["source"] = os.path.join("storage/pdfs", source_name) 
+            doc.metadata["source"] = source_name 
             doc.metadata["ingested_at"] = time.strftime("%Y-%m-%d %H:%M:%S")
 
         # --- PHASE 2: SPLITTING ---

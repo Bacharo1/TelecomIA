@@ -43,7 +43,10 @@ async def interroger_document(
             collection_name=COLLECTION_NAME,
             embedding_function=EMBEDDINGS
         )
-        search_kwargs = {"filter": {"source": file_path}}
+        
+
+        search_kwargs = {"filter": {"source": nom_fichier}}
+        docs = [] # Initialisation de la variable docs pour éviter une référence avant l'assignation
 
         # --- 4. Construction du prompt ---
         if mode == "resume":
@@ -54,6 +57,7 @@ async def interroger_document(
             if not question:
                 return {"reponse": "Erreur : Posez une question."}
             docs = db.similarity_search(question, k=4, **search_kwargs)
+            print(f"DEBUG: Nombre de chunks trouvés : {len(docs)}")
             contexte = "\n---\n".join([d.page_content for d in docs])
             prompt = f"""
             CONTEXTE (Source: {nom_fichier}) :
@@ -65,7 +69,8 @@ async def interroger_document(
             """
 
         # --- 5. Génération de la réponse ---
-        reponse = ollama.generate(model=os.getenv("OLLAMA_MODEL", "mistral"), prompt=prompt)
+        print(prompt)
+        reponse = ollama.generate(model=os.getenv("OLLAMA_MODEL", "mistral-dev"), prompt=prompt)
 
         return {
             "reponse": reponse['response'],

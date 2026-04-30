@@ -66,14 +66,14 @@ const interrogerDocument = async (formData) => {
 
         const result = await response.json();
         
-        // 3. CACHER APRÈS 1 SECONDE
+        // 3. CACHER APRÈS 2 SECONDES
         setTimeout(() => {
             progressContainer.style.display = 'none';
             btnImport.style.display = 'inline-block';
             // Réinitialisation pour le prochain upload
             progressBar.value = 0;
             progressPercent.innerText = "0%";
-        }, 1000); // 1000 ms = 1 secondes
+        }, 2000); // 2000 ms = 2 secondes
 
         return result;
 

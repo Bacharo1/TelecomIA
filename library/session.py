@@ -33,6 +33,8 @@ async def clear():
         collections = CHROMA_CLIENT.list_collections()
         print(f"Collections avant suppression : {[c.name for c in collections]}")
         CHROMA_CLIENT.delete_collection(COLLECTION_NAME)
+    except Exception:
+        print("La collection n'existait déjà plus.")
         CHROMA_CLIENT.create_collection(COLLECTION_NAME)
         print(f"Collections après suppression : {[c.name for c in collections]}")
         

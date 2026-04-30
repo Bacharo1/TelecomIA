@@ -4,8 +4,11 @@ from pathlib import Path
 import chromadb
 from langchain_ollama import OllamaEmbeddings
 
-# On définit tout ici une seule fois
-UPLOAD_DIR = Path("storage/pdfs")
+# Localise le dossier où se trouve config.py
+BASE_DIR = Path(__file__).resolve().parent
+
+# Crée le chemin absolu vers storage
+UPLOAD_DIR = BASE_DIR / "storage" / "pdfs"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 try:

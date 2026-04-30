@@ -40,7 +40,7 @@ async def import_file(
                 print(f" Fichier existe déjà : {file_path}")
 
         # --- 3. Ingestion dans ChromaDB ---
-        ingest_file_to_db(file_path, use_ocr=False)
+        ingest_file_to_db(file_path, use_ocr=True)
 
         # --- 4. Retour ---
         return {
