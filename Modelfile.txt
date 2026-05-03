@@ -5,7 +5,7 @@ FROM mistral
 PARAMETER temperature 0.2
 PARAMETER num_ctx 8192
 PARAMETER repeat_penalty 1.1
-PARAMETER stop <end_of_turn>
+PARAMETER stop "[INST]"
 
 # Définition du comportement du modèle (System Prompt)
 SYSTEM """
