@@ -1,16 +1,16 @@
 import os
-
+import time
 # Imports tiers
 import ollama
 from fastapi import APIRouter, Form
 from dotenv import load_dotenv
 
 # Imports locaux
-from library.ingest import ingest_file_to_db
 from langchain_chroma import Chroma
-from config import UPLOAD_DIR
+from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS, UPLOAD_DIR
+from customlogger import logger
 
-from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS
+
 
 load_dotenv()
 router = APIRouter()
@@ -19,15 +19,14 @@ router = APIRouter()
 
 @router.post("/interroger")
 async def interroger_document(
+    
     existing_file: str = Form(None), 
     question: str = Form(None),
     mode: str = Form("chat")
 ):
-    """
-    Endpoint pour interroger un document existant.
-    - Requiert un fichier déjà importé (existing_file).
-    - Effectue une recherche dans ChromaDB et génère une réponse.
-    """
+    
+    start_total = time.time()
+
     nom_fichier = existing_file
     file_path = os.path.join(UPLOAD_DIR, nom_fichier)
 
@@ -37,27 +36,38 @@ async def interroger_document(
             return {"reponse": f"Erreur : Le fichier {nom_fichier} n'existe pas."}
 
 
-        # --- 3. Recherche dans ChromaDB ---
+        # --- 2. Recherche dans ChromaDB ---
+        start_step = time.time()
         db = Chroma(
             client=CHROMA_CLIENT,
             collection_name=COLLECTION_NAME,
             embedding_function=EMBEDDINGS
         )
+        # Vérification que le document est bien indexé
+        check = db.get(where={"source": nom_fichier})
+        if not check or len(check["ids"]) == 0:
+            return {
+                "reponse": "Ce document est encore en cours d'indexation, veuillez patienter quelques instants avant de poser une question.",
+                "filename": nom_fichier,
+                "url_view": f"http://localhost:8001/documents/{nom_fichier}"
+            }
         
 
+        logger.info(f"Connexion ChromaDB en {time.time() - start_step:.2f}s")
+        
         search_kwargs = {"filter": {"source": nom_fichier}}
-        docs = [] # Initialisation de la variable docs pour éviter une référence avant l'assignation
 
-        # --- 4. Construction du prompt ---
+        # --- 3. Construction du prompt ---
+        start_step = time.time()
         if mode == "resume":
-            docs = db.similarity_search("Résumé global", k=6, **search_kwargs)
+            docs = db.similarity_search("Résumé global", k=10, **search_kwargs)
             contexte = "\n".join([d.page_content for d in docs])
             prompt = f"Fais un résumé structuré et synthétique du document **{nom_fichier}** :\n\n{contexte[:6000]}"
         else:  # mode "chat"
             if not question:
                 return {"reponse": "Erreur : Posez une question."}
-            docs = db.similarity_search(question, k=4, **search_kwargs)
-            print(f"DEBUG: Nombre de chunks trouvés : {len(docs)}")
+            docs = db.similarity_search(question, k=8, **search_kwargs)
+            logger.info(f"Nombre de chunks trouvés : {len(docs)}")
             contexte = "\n---\n".join([d.page_content for d in docs])
             prompt = f"""
             CONTEXTE (Source: {nom_fichier}) :
@@ -68,9 +78,14 @@ async def interroger_document(
             Réponds de manière précise et structurée en t'appuyant sur le contexte.
             """
 
-        # --- 5. Génération de la réponse ---
+        logger.info(f"Recherche vectorielle en {time.time() - start_step:.2f}s")
+
+        # --- 4. Génération de la réponse ---
+        start_step = time.time()
         print(prompt)
         reponse = ollama.generate(model=os.getenv("OLLAMA_MODEL", "mistral-dev"), prompt=prompt)
+        logger.info(f"Génération Ollama en {time.time() - start_step:.2f}s")
+        logger.info(f"Finished /interroger pour {nom_fichier} en {time.time() - start_total:.2f}s total.")
 
         return {
             "reponse": reponse['response'],
@@ -79,6 +94,6 @@ async def interroger_document(
         }
 
     except Exception as e:
-        print(f" Erreur dans /interroger : {str(e)}")
+        logger.error(f" Erreur dans /interroger : {str(e)}")
         return {"reponse": f"Erreur serveur : {str(e)}"}
     

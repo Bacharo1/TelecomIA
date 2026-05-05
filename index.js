@@ -92,11 +92,11 @@ async function envoyerRequete(mode = "chat") {
     btnImport.disabled = true; // Empêche le double-clic
     const file = pdfFileInput.files[0];
     const question = questionInput.value;
-    debugger;
+     
     if (!file && !fichierSelectionne) return alert("Veuillez d'abord sélectionner un PDF.");
     if (mode === "chat" && !question) return alert("Posez une question.");
     if (mode === "chat") questionInput.value = "";
-    debugger;
+     
 
     const formData = new FormData();
     
@@ -105,7 +105,7 @@ async function envoyerRequete(mode = "chat") {
     } else {
         formData.append("existing_file", fichierSelectionne);
     }
-        debugger;
+         
 
     formData.append("question", mode === "resume" ? "Fais un résumé synthétique du document." : question);
     formData.append("mode", mode);
@@ -115,9 +115,9 @@ async function envoyerRequete(mode = "chat") {
     } else {
         ajouterMessage('user', mode === "resume" ? "Demande de résumé..." : question);
     }
-        debugger;
+         
 
-    btnImport.disabled = true;
+    
     interrogerDocument(formData).then(data => {
         if (mode !== "import") {
             ajouterMessage('ai', data.reponse);
@@ -127,9 +127,9 @@ async function envoyerRequete(mode = "chat") {
 
         if (data.filename) {
             fichierSelectionne = data.filename;
-            pdfFileInput.value = ""; // Libère le fichier binaire
+            pdfFileInput.value = "";
         }
-            debugger;
+             
 
     
 
@@ -148,7 +148,7 @@ async function chargerListe() {
         const res = await fetch(`${API_URL}/liste-documents`);
         const data = await res.json();
         listeDocs.innerHTML = "";
-        debugger;
+         
         data.documents.forEach(doc => {
             const li = document.createElement('li');
             li.textContent = doc;
@@ -175,7 +175,7 @@ async function chargerListe() {
             };
             listeDocs.appendChild(li);
         });
-            debugger;
+             
 
     } catch (error) {
         listeDocs.innerHTML = "<li style='color: red;'>Erreur de chargement des documents</li>";

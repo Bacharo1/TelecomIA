@@ -4,6 +4,11 @@ from pathlib import Path
 import chromadb
 from langchain_ollama import OllamaEmbeddings
 
+from dotenv import load_dotenv
+
+load_dotenv()
+os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
+
 # Localise le dossier où se trouve config.py
 BASE_DIR = Path(__file__).resolve().parent
 

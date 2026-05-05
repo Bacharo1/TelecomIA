@@ -2,12 +2,11 @@
 import os
 
 # Imports tiers
-from fastapi import APIRouter, Form
-from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS, UPLOAD_DIR
+from fastapi import APIRouter
 from dotenv import load_dotenv
 
 # Imports locaux
-from config import UPLOAD_DIR
+from config import CHROMA_CLIENT, COLLECTION_NAME, UPLOAD_DIR
 
 load_dotenv()
 router = APIRouter()
@@ -32,14 +31,21 @@ async def clear():
         # Nettoyage ChromaDB
         collections = CHROMA_CLIENT.list_collections()
         print(f"Collections avant suppression : {[c.name for c in collections]}")
-        CHROMA_CLIENT.delete_collection(COLLECTION_NAME)
-    except Exception:
-        print("La collection n'existait déjà plus.")
-        CHROMA_CLIENT.create_collection(COLLECTION_NAME)
-        print(f"Collections après suppression : {[c.name for c in collections]}")
+         # Nettoyage ChromaDB 2
+        try:
+            CHROMA_CLIENT.delete_collection(COLLECTION_NAME)
+            print("Collection supprimée.")
+        except Exception:
+            print("La collection n'existait déjà plus.")
+            print("Nettoyage réussi !")
         
-        print("Nettoyage réussi !")
+        CHROMA_CLIENT.create_collection(COLLECTION_NAME)
+        print("Collection recréée. Nettoyage réussi !")
         return {"status": "success", "message": "Base et storage réinitialisés"}
+    
     except Exception as e:
         print(f"Erreur globale clear: {e}")
         return {"status": "error", "message": str(e)}
+    
+
+    
