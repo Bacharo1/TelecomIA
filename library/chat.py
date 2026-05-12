@@ -47,6 +47,7 @@ async def interroger_document(
         check = db.get(where={"source": nom_fichier})
         if not check or len(check["ids"]) == 0:
             return {
+                "Pret": False,
                 "reponse": "Ce document est encore en cours d'indexation, veuillez patienter quelques instants avant de poser une question.",
                 "filename": nom_fichier,
                 "url_view": f"http://localhost:8001/documents/{nom_fichier}"
@@ -60,9 +61,9 @@ async def interroger_document(
         # --- 3. Construction du prompt ---
         start_step = time.time()
         if mode == "resume":
-            docs = db.similarity_search("Résumé global", k=10, **search_kwargs)
-            contexte = "\n".join([d.page_content for d in docs])
-            prompt = f"Fais un résumé structuré et synthétique du document **{nom_fichier}** :\n\n{contexte[:6000]}"
+            docs = db.max_marginal_relevance_search("contenu principal du document", k=10, fetch_k=50, lambda_mult=0.3, **search_kwargs)
+            contexte = "\n\n".join([d.page_content for d in docs])
+            prompt = f"Fais un résumé structuré et synthétique du document **{nom_fichier}** :\n\n{contexte}"
         else:  # mode "chat"
             if not question:
                 return {"reponse": "Erreur : Posez une question."}
@@ -70,8 +71,7 @@ async def interroger_document(
             logger.info(f"Nombre de chunks trouvés : {len(docs)}")
             contexte = "\n---\n".join([d.page_content for d in docs])
             prompt = f"""
-            CONTEXTE (Source: {nom_fichier}) :
-            {contexte}
+            CONTEXTE (Source: {nom_fichier}) : {contexte}
 
             QUESTION : {question}
 
@@ -92,6 +92,7 @@ async def interroger_document(
             "filename": nom_fichier,
             "url_view": f"http://localhost:8001/documents/{nom_fichier}"
         }
+        
 
     except Exception as e:
         logger.error(f" Erreur dans /interroger : {str(e)}")

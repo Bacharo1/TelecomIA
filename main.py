@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from config import UPLOAD_DIR
 
-# On importe tes routers (une fois renommés)
+# On importe les routers 
 from library import session, upload, liste_documents, chat
 
 app = FastAPI()
@@ -20,3 +20,4 @@ app.include_router(chat.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
+

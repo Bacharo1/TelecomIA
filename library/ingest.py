@@ -1,22 +1,19 @@
 import os
 import uuid
 import time
-import chromadb
 from langchain_chroma import Chroma
-from langchain_ollama import OllamaEmbeddings
 from langchain_community.document_loaders import (
     PyPDFLoader, 
     TextLoader, 
-    Docx2txtLoader, 
     UnstructuredPDFLoader  # Ajouté pour les images/graphiques
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from customlogger import logger
 
-from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS
+from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS, ingestion_status 
 
 
-def ingest_file_to_db(file_path: str, use_ocr: bool = True, sockerRef = None):
+def ingest_file_to_db(file_path: str, use_ocr: bool = True):
     """
     Ingest files into ChromaDB. 
     Set use_ocr=True for PDFs with images/charts.
@@ -47,8 +44,6 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True, sockerRef = None):
                 )
             else:
                 loader = PyPDFLoader(abs_path)
-        elif ext == ".docx":
-            loader = Docx2txtLoader(abs_path)
         else:
             loader = TextLoader(abs_path, encoding='utf-8')
         
@@ -83,6 +78,7 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True, sockerRef = None):
 
         total_time = time.time() - start_total
         logger.info(f" Finished {source_name} en {total_time:.2f}s total.")
+        ingestion_status[source_name] = True
         return {
             "status": "success",
             "file": source_name,

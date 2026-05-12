@@ -22,3 +22,5 @@ try:
     COLLECTION_NAME = "mistral_kb"
 except Exception as e:
     chromadb.logger.error(f"Initialization failed: {e}")
+
+ingestion_status = {}    

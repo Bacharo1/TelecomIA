@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 # Imports locaux
 from library.ingest import ingest_file_to_db
-from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS, UPLOAD_DIR
+from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS, UPLOAD_DIR, ingestion_status
 
 load_dotenv()
 router = APIRouter()
@@ -59,15 +59,23 @@ async def import_file(
             }
         else:
             background_tasks.add_task(ingest_file_to_db, file_path, use_ocr=True)
+            ingestion_status[nom_fichier] = False
             print(f"Tâche d'ingestion enregistrée en arrière-plan pour : {nom_fichier}")
             return {
                     "reponse": "Document reçu, analyse en cours...",
                     "filename": nom_fichier,
                     "url_view": f"http://localhost:8001/documents/{nom_fichier}"
-        }
+            }
+
 
 
 
     except Exception as e:
         print(f" Erreur dans /import : {str(e)}")
         return {"reponse": f"Erreur lors de l'import : {str(e)}"}
+    
+
+@router.get("/status/{filename}")
+async def get_status(filename: str):
+    return {"pret": ingestion_status.get(filename, False)}
+

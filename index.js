@@ -10,6 +10,10 @@ const btnReset = document.getElementById('btnReset');
 const chatBox = document.getElementById('chatBox');
 const listeDocs = document.getElementById('listeDocs');
 const pdfViewer = document.getElementById('pdfViewer');
+const progressContainer = document.getElementById('progress-container');
+const progressBar = document.getElementById('upload-progress');
+const progressPercent = document.getElementById('progress-percent');
+
 
 let fichierSelectionne = null;
 
@@ -82,19 +86,24 @@ const interrogerDocument = async (formData) => {
         console.error("Erreur:", error);
         // En cas d'erreur, on cache souvent plus vite ou on affiche un message d'erreur
         setTimeout(() => { progressContainer.style.display = 'none'; 
-        btnImport.style.display = 'inline-block'; }, 3000);
+        btnImport.style.display = 'inline-block'; }, 500); throw error;
     }
 };
 
 
 // --- FONCTION PRINCIPALE : INTERROGER ---
 async function envoyerRequete(mode = "chat") {
+    console.log("=== envoyerRequete appelée, mode:", mode); // ← ajoute ça
+    console.log("file:", pdfFileInput.files[0]);
+    console.log("fichierSelectionne:", fichierSelectionne);
+    console.log("btnImport.disabled:", btnImport.disabled);
     btnImport.disabled = true; // Empêche le double-clic
     const file = pdfFileInput.files[0];
     const question = questionInput.value;
      
-    if (!file && !fichierSelectionne) return alert("Veuillez d'abord sélectionner un PDF.");
-    if (mode === "chat" && !question) return alert("Posez une question.");
+    if (!file && !fichierSelectionne){ return alert("Veuillez d'abord sélectionner un PDF.");}
+    if (mode === "chat" && !question){ return alert("Posez une question.");}
+    btnImport.disabled = true;
     if (mode === "chat") questionInput.value = "";
      
 
@@ -119,23 +128,43 @@ async function envoyerRequete(mode = "chat") {
 
     
     interrogerDocument(formData).then(data => {
-        if (mode !== "import") {
-            ajouterMessage('ai', data.reponse);
-        } else {
-            ajouterMessage('ai', "Document prêt ! Que voulez-vous savoir ?");
+        if (mode === "import") {
+             if (data.filename) {
+            fichierSelectionne = data.filename;
+            pdfFileInput.value = "";
+            ajouterMessage('ai', "Fichier reçu, indexation en cours...")
         }
 
+        const attente = setInterval(async () => {
+
+
+            const res = await fetch(`${API_URL}/status/${encodeURIComponent(data.filename)}`);
+
+            const json = await res.json();
+
+            if (json.pret !== false) {
+                clearInterval(attente);
+                ajouterMessage('ai', " Document prêt ! Que voulez-vous savoir ?");
+                btnImport.disabled = false;
+                chargerListe();
+            }
+        }, 5000);
+    } else {
+        ajouterMessage('ai', data.reponse);
         if (data.filename) {
             fichierSelectionne = data.filename;
             pdfFileInput.value = "";
         }
-             
+        btnImport.disabled = false;
+    }
 
-    
+        
+             
 
     }, error => {
         console.error("Erreur lors de l'interrogation:", error);
-        ajouterMessage('ai', "Erreur lors de l'interrogation du document.");
+        ajouterMessage('ai', "Erreur lors de l'import du document.");
+        
         btnImport.disabled = false;
     });
 }
