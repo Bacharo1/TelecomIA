@@ -154,7 +154,6 @@ button {
 #listeDocs li.actif::after {
     content: "";
     position: absolute;
-    /* On le place juste avant la pointe de ta forme */
     right: 15%; 
     top: 50%;
     transform: translateY(-50%);
@@ -185,7 +184,7 @@ button {
 
 #pdfViewer {
     flex-grow: 1;
-    background: #34495e; /* Couleur sombre pour faire ressortir le PDF blanc */
+    background: #34495e; 
     border-radius: 8px;
     overflow: hidden;
     display: flex;
@@ -227,14 +226,12 @@ button {
     transform: translate(-50%, -50%);
     width: 350px;  /* Taille du logo */
     height: 350px; 
-    /* Remplace 'logo.png' par le chemin de ton image */
     background-image: url('images/LOGOTelecomIA.png'); 
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    /* Opacité très basse pour l'effet "filigrane" */
     opacity: 0.9; 
-    pointer-events: none; /* Permet de cliquer sur les messages à travers le logo */
+    pointer-events: none;
     z-index: 0;
 }
 

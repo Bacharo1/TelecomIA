@@ -10,10 +10,6 @@ const btnReset = document.getElementById('btnReset');
 const chatBox = document.getElementById('chatBox');
 const listeDocs = document.getElementById('listeDocs');
 const pdfViewer = document.getElementById('pdfViewer');
-const progressContainer = document.getElementById('progress-container');
-const progressBar = document.getElementById('upload-progress');
-const progressPercent = document.getElementById('progress-percent');
-
 
 let fichierSelectionne = null;
 
@@ -93,7 +89,7 @@ const interrogerDocument = async (formData) => {
 
 // --- FONCTION PRINCIPALE : INTERROGER ---
 async function envoyerRequete(mode = "chat") {
-    console.log("=== envoyerRequete appelée, mode:", mode); // ← ajoute ça
+    console.log("=== envoyerRequete appelée, mode:", mode);
     console.log("file:", pdfFileInput.files[0]);
     console.log("fichierSelectionne:", fichierSelectionne);
     console.log("btnImport.disabled:", btnImport.disabled);
@@ -228,7 +224,7 @@ async function reset() {
 
         if (response.ok) {
             alert("L'IA a oublié les documents précédents !");
-            // Optionnel : recharger la page pour rafraîchir l'affichage
+            // Recharger la page pour rafraîchir l'affichage
             window.location.reload();
         } else {
             throw new Error("La requête n'a pas abouti.");

@@ -3,7 +3,7 @@ import uuid
 import time
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import (
-    PyPDFLoader, 
+    PyPDFLoader,
     TextLoader, 
     UnstructuredPDFLoader  # Ajouté pour les images/graphiques
 )
@@ -34,22 +34,30 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True):
         
         if ext == ".pdf":
             if use_ocr:
-                # Stratégie 'hi_res' pour analyser le layout et extraire le texte des images/tables
-                loader = UnstructuredPDFLoader(
-                    abs_path,
-                    strategy="hi_res",  # Analyse les graphiques et images
-                    infer_table_structure=True, # Tente de reconstruire les tableaux
-                    chunking_strategy="basic",
-                    languages=["fra"]
-                )
+                try:
+                    # Stratégie 'hi_res' pour analyser le layout et extraire le texte des images/tables
+                    loader = UnstructuredPDFLoader(
+                        abs_path,
+                        strategy="hi_res",  # Analyse les graphiques et images
+                        infer_table_structure=True, # Tente de reconstruire les tableaux
+                        languages=["fra"]
+                    )
+                    raw_docs = loader.load()
+                except Exception as ocr_err:
+                    logger.warning(f" hi_res failed ({ocr_err}), falling back to PyPDFLoader")
+                    loader = PyPDFLoader(abs_path)
+                    raw_docs = loader.load()
             else:
                 loader = PyPDFLoader(abs_path)
+                raw_docs = loader.load()
         else:
             loader = TextLoader(abs_path, encoding='utf-8')
+            raw_docs = loader.load()
         
-        raw_docs = loader.load()
         load_time = time.time() - start_step
         logger.info(f" Loaded {len(raw_docs)} units/pages in {load_time:.2f}s")
+        for i, doc in enumerate(raw_docs):
+            logger.info(f" Doc {i} — {len(doc.page_content)} chars — page: {doc.metadata.get('page', '?')}")
         # Tag Metadata
         for doc in raw_docs:
             # On utilise le chemin relatif "storage/pdfs/nom.pdf" pour matcher le main.py
@@ -89,5 +97,7 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True):
     except Exception as e:
         logger.error(f" Failed to ingest {source_name}: {str(e)}")
         return {"status": "error", "message": str(e)}
+    
+    
 
 # ingest_file_to_db(r"docs/Presentation_RGPD.pdf", use_ocr=True)

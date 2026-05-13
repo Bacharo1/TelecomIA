@@ -61,8 +61,12 @@ async def interroger_document(
         # --- 3. Construction du prompt ---
         start_step = time.time()
         if mode == "resume":
-            docs = db.max_marginal_relevance_search("contenu principal du document", k=10, fetch_k=50, lambda_mult=0.3, **search_kwargs)
-            contexte = "\n\n".join([d.page_content for d in docs])
+            contexte_complet = "\n\n".join(check["documents"])
+            if len(contexte_complet) <= 10000: # Si le contexte complet est raisonnable, on l'utilise tel quel
+                contexte = contexte_complet
+            else:
+                docs = db.max_marginal_relevance_search("contenu principal du document", k=10, fetch_k=50, lambda_mult=0.5, **search_kwargs)
+                contexte = "\n\n".join([d.page_content for d in docs])
             prompt = f"Fais un résumé structuré et synthétique du document **{nom_fichier}** :\n\n{contexte}"
         else:  # mode "chat"
             if not question:
