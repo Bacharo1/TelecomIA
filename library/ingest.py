@@ -42,18 +42,18 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True):
                         infer_table_structure=True, # Tente de reconstruire les tableaux
                         languages=["fra"]
                     )
-                    raw_docs = loader.load()
+                    
                 except Exception as ocr_err:
                     logger.warning(f" hi_res failed ({ocr_err}), falling back to PyPDFLoader")
                     loader = PyPDFLoader(abs_path)
-                    raw_docs = loader.load()
+                    
             else:
                 loader = PyPDFLoader(abs_path)
-                raw_docs = loader.load()
+                
         else:
             loader = TextLoader(abs_path, encoding='utf-8')
-            raw_docs = loader.load()
-        
+            
+        raw_docs = loader.load()
         load_time = time.time() - start_step
         logger.info(f" Loaded {len(raw_docs)} units/pages in {load_time:.2f}s")
         for i, doc in enumerate(raw_docs):
