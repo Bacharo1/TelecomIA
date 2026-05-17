@@ -2,6 +2,7 @@ import os
 import uuid
 import time
 from langchain_chroma import Chroma
+from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_community.document_loaders import (
     PyPDFLoader,
     TextLoader, 
@@ -39,25 +40,24 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True):
                     loader = UnstructuredPDFLoader(
                         abs_path,
                         strategy="hi_res",  # Analyse les graphiques et images
+                        chunking_strategy="by_page",
                         infer_table_structure=True, # Tente de reconstruire les tableaux
                         languages=["fra"]
                     )
                     
                 except Exception as ocr_err:
                     logger.warning(f" hi_res failed ({ocr_err}), falling back to PyPDFLoader")
-                    loader = PyPDFLoader(abs_path)
-                    
+                    loader = PyPDFLoader(abs_path)                    
             else:
-                loader = PyPDFLoader(abs_path)
-                
+                loader = PyPDFLoader(abs_path)                
         else:
             loader = TextLoader(abs_path, encoding='utf-8')
-            
+
         raw_docs = loader.load()
         load_time = time.time() - start_step
         logger.info(f" Loaded {len(raw_docs)} units/pages in {load_time:.2f}s")
         for i, doc in enumerate(raw_docs):
-            logger.info(f" Doc {i} — {len(doc.page_content)} chars — page: {doc.metadata.get('page', '?')}")
+            logger.info(f" Doc {i} — {len(doc.page_content)} chars — page: {doc.metadata.get('page_number') or doc.metadata.get('page', '?')}")
         # Tag Metadata
         for doc in raw_docs:
             # On utilise le chemin relatif "storage/pdfs/nom.pdf" pour matcher le main.py
@@ -71,6 +71,7 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True):
         chunks = text_splitter.split_documents(raw_docs)
         split_time = time.time() - start_step
         logger.info(f" Split into {len(chunks)} chunks in {split_time:.2f}s")
+        chunks = filter_complex_metadata(chunks)
         
         # --- PHASE 3: EMBEDDING & SAVING ---
         start_step = time.time()
