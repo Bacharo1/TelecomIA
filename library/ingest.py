@@ -40,9 +40,10 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True):
                     loader = UnstructuredPDFLoader(
                         abs_path,
                         strategy="hi_res",  # Analyse les graphiques et images
-                        chunking_strategy="by_page",
+                        mode="paged",  # Traite les éléments séparément (texte, tableaux, images)
                         infer_table_structure=True, # Tente de reconstruire les tableaux
-                        languages=["fra"]
+                        languages=["fra"],
+                        unstructured_kwargs={"chunking_strategy": "by_page"}
                     )
                     
                 except Exception as ocr_err:

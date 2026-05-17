@@ -10,6 +10,7 @@ const btnReset = document.getElementById('btnReset');
 const chatBox = document.getElementById('chatBox');
 const listeDocs = document.getElementById('listeDocs');
 const pdfViewer = document.getElementById('pdfViewer');
+const uploadText = document.getElementById('uploadText');
 
 let fichierSelectionne = null;
 
@@ -237,6 +238,18 @@ async function reset() {
         btnReset.textContent = "Réinitialiser";
     }
 }
+
+pdfFileInput.addEventListener('change', function() {
+    if (this.files && this.files.length > 0) {
+        const fileName = this.files[0].name;
+        uploadText.textContent = `${fileName}`;
+        setTimeout(() => {
+            pdfFileInput.value = "";
+            uploadText.textContent = "Glisse ton PDF ici ou clique";}, 3000);
+    } else {
+        uploadText.textContent = "Glisse ton PDF ici ou clique";
+    }
+});
 
 
 // --- ÉVÉNEMENTS ---
