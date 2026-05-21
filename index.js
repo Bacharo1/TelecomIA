@@ -1,3 +1,7 @@
+if (!sessionStorage.getItem('loggedIn')) {
+    window.location.href = 'login.html';
+}
+
 const API_URL = "http://localhost:8001";
 
 // --- ELEMENTS HTML ---

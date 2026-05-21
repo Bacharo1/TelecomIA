@@ -16,22 +16,194 @@ body {
     height: 100vh; /* Toute la hauteur de l'écran */
     overflow: hidden;
 }
+
+/* --- Écran de connexion --- */
+
+body.page-login {
+    background-color: #0f3460;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+body.page-login::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, #fb923c 0%, #1a1a2e 50%, #0f3460 100%);
+    animation: rotateBg 10s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotateBg {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+body.page-login .main-layout {
+    display: none;
+}
+
+/* Container */
+body.page-login .login-container,
+body.page-login #login-screen {
+    position: relative;
+    z-index: 1;
+    background: #16213e;
+    border: 1px solid #fb923c;
+    border-radius: 12px;
+    padding: 48px 40px;
+    width: 380px;
+    max-width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: fadeIn 0.4s ease;
+    text-align: center;
+    color: #e0e0e0;
+    margin: 0 auto;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Logo */
+body.page-login .logo {
+    margin-bottom: 32px;
+}
+body.page-login .logo h1 {
+    color: #e0e0e0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+body.page-login .logo span {
+    color: #fb923c;
+}
+body.page-login .logo p {
+    color: #7a8ba0;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+/* Groupes de formulaire */
+body.page-login .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+body.page-login label {
+    display: block;
+    color: #a0b4c8;
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Champs */
+body.page-login input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #0f3460;
+    border: 0.5px solid #fb923c;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+body.page-login input:focus {
+    box-shadow: 0 0 0 1px #fb923c;
+}
+body.page-login input::placeholder {
+    color: #4a6080;
+}
+
+/* Bouton */
+body.page-login .btn-login,
+body.page-login #btnLogin {
+    width: 100%;
+    padding: 13px;
+    background: #f97316;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.5px;
+}
+body.page-login .btn-login:hover,
+body.page-login #btnLogin:hover {
+    background: #fb923c;
+}
+body.page-login .btn-login:active,
+body.page-login #btnLogin:active {
+    transform: scale(0.98);
+}
+body.page-login .btn-login:disabled,
+body.page-login #btnLogin:disabled {
+    background: #2a5080;
+    cursor: not-allowed;
+}
+
+/* Message d'erreur */
+body.page-login .error-msg {
+    background: rgba(220, 53, 69, 0.15);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #ff6b7a;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-top: 16px;
+    display: none;
+    text-align: center;
+}
+body.page-login .error-msg.visible {
+    display: block;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-6px); }
+    75%       { transform: translateX(6px); }
+}
+
+/* Pied de page */
+body.page-login .footer-text,
+body.page-login p.footer-text {
+    text-align: center;
+    color: #4a6080;
+    font-size: 0.75rem;
+    margin-top: 28px;
+}
+
 /* --- Barre latérale (Sidebar) --- */
 .btn-titre-refresh {
     background: none;
     border: none;
-    color: #3498db; /* Ta couleur bleue actuelle */
-    font-size: 24px; /* À ajuster selon ton design */
-    font-weight: bold;
+    color: #ffffff; 
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
     cursor: pointer;
     padding: 0;
-    text-align: left;
+    text-align: center;
     transition: opacity 0.2s;
+    height: 30px;
 }
 
-.btn-titre-refresh:hover {
-    opacity: 0.7; /* Petit effet au survol pour montrer que c'est cliquable */
-}
+.btn-titre-refresh:hover {opacity: 0.7; }
 
 
 
@@ -93,15 +265,10 @@ input[type="file"] {
 }
 
 .upload-section:hover {
-    background: #2c3e50; /* Un fond légèrement plus sombre */
-    border-color: #fb923c; /* Un orange plus vif */
-}
-
-/* 2. Feedback visuel quand l'utilisateur navigue au clavier (Accessibilité) */
-.upload-section:focus-within {
-    outline: 2px solid #fff;
+    background: #2c3e50; 
     border-color: #fb923c;
 }
+
 
 
 /* --- Boutons --- */

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import UPLOAD_DIR
 
 # On importe les routers 
-from library import session, upload, liste_documents, chat
+from library import session, upload, liste_documents, chat, login
 
 app = FastAPI()
 
@@ -17,6 +17,7 @@ app.include_router(session.router)
 app.include_router(upload.router)
 app.include_router(liste_documents.router)
 app.include_router(chat.router)
+app.include_router(login.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
