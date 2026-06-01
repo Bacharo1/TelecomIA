@@ -5,11 +5,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import UPLOAD_DIR
 
 # On importe les routers 
-from library import session, upload, liste_documents, chat, login
+from library import register, session, upload, liste_documents, chat, login
 
 app = FastAPI()
 
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 app.mount("/documents", StaticFiles(directory=str(UPLOAD_DIR)), name="documents")
 
 # ON BRANCHE TOUT ICI
@@ -18,6 +18,7 @@ app.include_router(upload.router)
 app.include_router(liste_documents.router)
 app.include_router(chat.router)
 app.include_router(login.router)
+app.include_router(register.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)

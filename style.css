@@ -19,6 +19,167 @@ body {
 
 /* --- Écran de connexion --- */
 
+
+body.page-register {
+    background-color: #0f3460;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
+body.page-register::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, #fb923c 0%, #1a1a2e 50%, #0f3460 100%);
+    animation: rotateBg 10s linear infinite;
+    z-index: 0;
+}
+
+body.page-register .main-layout {
+    display: none;
+}
+
+/* Container */
+body.page-register .register-container,
+body.page-register #register-screen {
+    position: relative;
+    z-index: 1;
+    background: #16213e;
+    border: 1px solid #fb923c;
+    border-radius: 12px;
+    padding: 48px 40px;
+    width: 380px;
+    max-width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: fadeIn 0.4s ease;
+    text-align: center;
+    color: #e0e0e0;
+    margin: 0 auto;
+}
+
+/* Logo */
+body.page-register .logo {
+    margin-bottom: 32px;
+}
+body.page-register .logo h1 {
+    color: #e0e0e0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+body.page-register .logo span {
+    color: #fb923c;
+}
+body.page-register .logo p {
+    color: #7a8ba0;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+/* Groupes de formulaire */
+body.page-register .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+body.page-register label {
+    display: block;
+    color: #a0b4c8;
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Champs */
+body.page-register input, select {
+    width: 100%;
+    padding: 12px 16px;
+    background: #0f3460;
+    border: 0.5px solid #fb923c;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+body.page-register input:focus, select:focus {
+    box-shadow: 0 0 0 1px #fb923c;
+}
+body.page-register input::placeholder {
+    color: #4a6080;
+}
+
+/* Bouton */
+body.page-register .btn-register,
+body.page-register #btnRegister {
+    width: 100%;
+    padding: 13px;
+    background: #f97316;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.5px;
+}
+body.page-register .btn-register:hover,
+body.page-register #btnRegister:hover {
+    background: #fb923c;
+}
+body.page-register .btn-register:active,
+body.page-register #btnRegister:active {
+    transform: scale(0.98);
+}
+body.page-register .btn-register:disabled,
+body.page-register #btnRegister:disabled {
+    background: #2a5080;
+    cursor: not-allowed;
+}
+
+/* Message d'erreur */
+body.page-register .error-msg {
+    background: rgba(220, 53, 69, 0.15);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #ff6b7a;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-top: 16px;
+    display: none;
+    text-align: center;
+}
+body.page-register .error-msg.visible {
+    display: block;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-6px); }
+    75%       { transform: translateX(6px); }
+}
+
+/* Pied de page */
+body.page-register .footer-text,
+body.page-register p.footer-text {
+    text-align: center;
+    color: #4a6080;
+    font-size: 0.75rem;
+    margin-top: 28px;
+}
+
+
 body.page-login {
     background-color: #0f3460;
     display: flex;
@@ -26,6 +187,9 @@ body.page-login {
     align-items: center;
     height: 100vh;
     overflow: hidden;
+    top: -50%;
+    left: -50%;
+    width: 100%;
 }
 
 body.page-login::before {
@@ -107,7 +271,7 @@ body.page-login label {
 }
 
 /* Champs */
-body.page-login input {
+body.page-login input, select {
     width: 100%;
     padding: 12px 16px;
     background: #0f3460;
@@ -119,7 +283,7 @@ body.page-login input {
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
 }
-body.page-login input:focus {
+body.page-login input:focus, select:focus {
     box-shadow: 0 0 0 1px #fb923c;
 }
 body.page-login input::placeholder {
@@ -462,4 +626,140 @@ button {
     border: 1px solid #ddd;
     border-radius: 5px;
     outline: none;
+}
+
+
+/* --- Page Inscription --- */
+body.page-login .register-container {
+    width: 440px;
+    padding: 40px 42px;
+}
+
+.form-row {
+    display: flex;
+    gap: 14px;
+}
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 18px;
+}
+
+.strength-wrap {
+    display: flex;
+    gap: 5px;
+    margin-top: 7px;
+}
+.strength-bar {
+    flex: 1;
+    height: 3px;
+    border-radius: 3px;
+    background: #1a3550;
+    transition: background 0.35s ease;
+}
+.strength-bar.weak   { background: #ef4444; }
+.strength-bar.medium { background: #f59e0b; }
+.strength-bar.strong { background: #22c55e; }
+
+.success-msg {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #4ade80;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-top: 16px;
+    display: none;
+    text-align: center;
+}
+.success-msg.visible {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #4a6080;
+    font-size: 0.78rem;
+    margin: 18px 0 14px;
+}
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #1e3a5a;
+}
+
+.bottom-link {
+    text-align: center;
+    color: #7a8ba0;
+    font-size: 0.83rem;
+    margin-top: 18px;
+}
+.bottom-link a {
+    color: #fb923c;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+.bottom-link a:hover {
+    color: #f97316;
+    text-decoration: underline;
+}
+
+.field-hint {
+    color: #4a6080;
+    font-size: 0.72rem;
+    margin-top: 5px;
+}
+.match-ok   { color: #4ade80; font-size: 0.72rem; margin-top: 5px; }
+.match-fail { color: #f87171; font-size: 0.72rem; margin-top: 5px; }
+
+/* --- Lien inscription dans login.html --- */
+body.page-login .register-link {
+    text-align: center;
+    color: #7a8ba0;
+    font-size: 0.83rem;
+    margin-top: 16px;
+}
+body.page-login .register-link a {
+    color: #fb923c;
+    text-decoration: none;
+    font-weight: 600;
+}
+body.page-login .register-link a:hover {
+    color: #f97316;
+    text-decoration: underline;
+}
+
+/* --- Barre top + bouton inscription dans index.html --- */
+.chat-topbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #eee;
+    background: #ffffff;
+    flex-shrink: 0;
+}
+.btn-register-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #f97316;
+    color: #fff;
+    padding: 16px 16px;
+    border-radius: 1px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.3);
+}
+.btn-register-top:hover {
+    background: #fb923c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(249,115,22,0.4);
 }

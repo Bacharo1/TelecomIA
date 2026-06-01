@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>TelecomIA - Inscription</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-register">
+
+<div class="register-container">
+    <div class="logo">
+        <h1>Telecom<span>IA</span></h1>
+        <p>Créer un nouveau compte</p>
+    </div>
+
+
+    <div class="form-group">
+        <label>Identifiant</label>
+        <input type="text" id="username" placeholder="Entrez un identifiant" autocomplete="off">
+    </div>
+
+    <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="password" placeholder="Minimum 8 caractères">
+        <div class="strength-wrap">
+            <div class="strength-bar" id="bar1"></div>
+            <div class="strength-bar" id="bar2"></div>
+            <div class="strength-bar" id="bar3"></div>
+        </div>
+        <div class="field-hint" id="strengthLabel">Force du mot de passe</div>
+    </div>
+
+    <div class="form-group">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" id="confirmPassword" placeholder="Répétez votre mot de passe">
+        <div id="matchIndicator"></div>
+    </div>
+
+
+<div class="form-group">
+        <label>Équipe</label>
+        <select id="equipeId">
+            <option value="admin">Admin</option>
+            <option value="RH">RH</option>
+            <option value="TECH">TECH</option>
+        </select>
+    </div>
+
+    <button class="btn-login" id="btnRegister">Créer mon compte</button>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg">✓ Compte créé avec succès ! Redirection…</div>
+
+    <div class="or-divider">ou</div>
+
+    <div class="bottom-link">
+        Déjà un compte ? <a href="login.html">Se connecter</a>
+    </div>
+</div>
+
+<script src="register.js"></script>
+</body>
+</html>
