@@ -9,7 +9,7 @@ from langchain_community.document_loaders import (
     UnstructuredPDFLoader  # Ajouté pour les images/graphiques
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from customlogger import logger
+from library.customlogger import logger
 
 from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS, ingestion_status 
 

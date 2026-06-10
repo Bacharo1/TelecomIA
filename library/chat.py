@@ -1,6 +1,8 @@
 import os
 import time
+
 # Imports tiers
+import emoji
 import ollama
 from fastapi import APIRouter, Form
 from dotenv import load_dotenv
@@ -8,13 +10,24 @@ from dotenv import load_dotenv
 # Imports locaux
 from langchain_chroma import Chroma
 from config import CHROMA_CLIENT, COLLECTION_NAME, EMBEDDINGS, UPLOAD_DIR
-from customlogger import logger
+from library.customlogger import logger
 
 
 
 load_dotenv()
 router = APIRouter()
 
+def get_chunks_tries_par_page(db, nom_fichier: str) -> list:
+    tous_docs = db.get(
+        where={"source": nom_fichier},
+        include=["documents", "metadatas"]
+    )
+    paires = list(zip(tous_docs["documents"], tous_docs["metadatas"]))
+    triees = sorted(
+        paires,
+        key=lambda x: x[1].get("page_number") if x[1].get("page_number") is not None else x[1].get("page", 0)
+    )
+    return [doc for doc, _ in triees]
 
 
 @router.post("/interroger")
@@ -61,18 +74,19 @@ async def interroger_document(
         # --- 3. Construction du prompt ---
         start_step = time.time()
         if mode == "resume":
-            contexte_complet = "\n\n".join(check["documents"])
-            if len(contexte_complet) <= 10000: # Si le contexte complet est raisonnable, on l'utilise tel quel
+            chunks_ordonnes = get_chunks_tries_par_page(db, nom_fichier)
+            contexte_complet = "\n\n".join([doc for doc in chunks_ordonnes])
+            if len(contexte_complet) <= 20000: # Si le contexte complet est raisonnable, on l'utilise tel quel
                 logger.info(f"[RESUME] Contexte complet utilisé ({len(contexte_complet)} chars)")
                 contexte = contexte_complet
             else:
-                docs = db.max_marginal_relevance_search("contenu principal du document", k=20, fetch_k=70, lambda_mult=0.5, **search_kwargs)
+                docs = db.max_marginal_relevance_search("contenu principal du document", k=30, fetch_k=70, lambda_mult=0.5, **search_kwargs)
                 contexte = "\n\n".join([d.page_content for d in docs])
             prompt = f"Fais un résumé structuré et synthétique du document **{nom_fichier}** :\n\n{contexte}"
         else:  # mode "chat"
             if not question:
                 return {"reponse": "Erreur : Posez une question."}
-            docs = db.similarity_search(question, k=12, **search_kwargs)
+            docs = db.similarity_search(question, k=25, **search_kwargs)
             logger.info(f"Nombre de chunks trouvés : {len(docs)}")
             contexte = "\n---\n".join([d.page_content for d in docs])
             prompt = f"""
@@ -88,12 +102,12 @@ async def interroger_document(
         # --- 4. Génération de la réponse ---
         start_step = time.time()
         print(prompt)
-        reponse = ollama.generate(model=os.getenv("OLLAMA_MODEL", "mistral-dev"), prompt=prompt)
+        reponse = ollama.chat(model=os.getenv("OLLAMA_MODEL"),messages=[{"role": "user", "content": prompt}])
         logger.info(f"Génération Ollama en {time.time() - start_step:.2f}s")
         logger.info(f"Finished /interroger pour {nom_fichier} en {time.time() - start_total:.2f}s total.")
-
+        clean_text = emoji.replace_emoji(reponse['message']['content'], replace='')
         return {
-            "reponse": reponse['response'],
+            "reponse": clean_text,
             "filename": nom_fichier,
             "url_view": f"http://localhost:8001/documents/{nom_fichier}"
         }

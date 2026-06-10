@@ -1,10 +1,12 @@
-# Utilisation de mistral comme base
-FROM mistral
+# Utilisation de gemma4:e4b comme base
+
+FROM gemma4:e4b
 
 # Paramètres de précision
 PARAMETER temperature 0.2
-PARAMETER num_ctx 8192
-PARAMETER stop "[/INST]"
+PARAMETER num_ctx 16384
+PARAMETER stop "<|END_OF_TURN_TOKEN|>"
+
 
 # Définition du comportement du modèle (System Prompt)
 SYSTEM """

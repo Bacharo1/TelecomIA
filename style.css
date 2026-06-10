@@ -467,9 +467,8 @@ button {
 /* --- Liste des documents --- */
 #listeDocs {
     list-style: none;
-    margin-bottom: 20px;
     flex-shrink: 0; /* Empêche la liste de s'écraser, mais on va limiter sa hauteur */
-    max-height: 110px; /* Taille maximum avant de scroller */
+    max-height: 90px; /* Taille maximum avant de scroller */
     overflow-y: auto;
     padding-right: 5px;
 }
