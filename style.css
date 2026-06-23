@@ -373,7 +373,7 @@ body.page-login p.footer-text {
 
 .sidebar {
     /* Structure */
-    width: 350px;
+    width: 280px;
     height: 100vh;
     overflow-y: auto;
     display: flex;
@@ -523,7 +523,6 @@ button {
     display: flex;
     flex-direction: column;
     border-top: 2px solid #1a252f;
-    padding-top: 15px;
     min-height: 0; /* Important pour le scroll interne */
 }
 
@@ -551,6 +550,13 @@ button {
     height: 100%;
     border: none;
 }
+
+#pdfViewer p
+{
+    margin: 0;
+    padding: 7px 14px;
+}
+
 
 /* --- Zone de Chat --- */
 .chat-area {

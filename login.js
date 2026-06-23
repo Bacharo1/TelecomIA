@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sessionStorage.setItem('loggedIn', 'true');
                 sessionStorage.setItem('username', data.username);
                 if (data.equipe_id) sessionStorage.setItem('equipe_id', data.equipe_id);
-                window.location.href = 'index.html';
+                window.location.href = 'test.html';
             } else if (response.status === 401) {
                 afficherErreur('Identifiant ou mot de passe incorrect.');
             } else {

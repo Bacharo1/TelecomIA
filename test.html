@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Mon IA Documentaire - TelecomIA RAG</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+
+<div class="m-app">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="m-sidebar">
+
+        <div class="m-side-head">
+            <button type="button" onclick="window.location.reload()" class="m-brand">
+                <div id="brand-logo"><svg viewBox="0 0 64 64" width="40" height="40"><rect width="64" height="64" rx="16" fill="var(--accent)" /><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-weight="bold" font-size="32" letter-spacing="-1">DT</text></svg></div>
+                <div class="m-brand-text">
+                    <span class="m-brand-name">TelecomIA</span>
+                    <span class="m-brand-sub">Assistant documentaire</span>
+                </div>
+            </button>
+            <button id="btn-theme" class="m-theme" aria-label="Changer le thème">
+                <!-- Icône SOLEIL (mode clair) -->
+                <svg class="icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42
+                            M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <!-- Icône LUNE (mode sombre) -->
+                <svg class="icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="upload-section">
+            <span class="upload-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"> <path d="M12 14V4M8 8l4-4 4 4"></path><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"></path></svg>
+            </span>
+            <span class="upload-section-ico"></span>
+            <span id="uploadText">Glisse ton PDF ici ou clique</span>
+            <input type="file" id="pdfFile" accept=".pdf">
+        </div>
+
+
+            <div id="progress-container" style="display:none;">
+                <progress id="upload-progress" value="0" max="100"></progress>
+                <span id="progress-percent">0%</span>
+            </div>
+
+            <div class="m-actions">
+                <button id="btnImport" class="m-btn">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none"
+                         stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Importer Document
+                </button>
+                <button id="btnResume" class="m-btn">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none"
+                         stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    Résumé Automatique
+                </button>
+                <button id="btnReset" class="m-btn">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none"
+                         stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1M5 3v4h4"/>
+                    </svg>
+                    Réinitialiser la Session
+                </button>
+            </div>
+
+            
+                <p class="m-label">Documents en session</p>
+                <ul id="listeDocs"></ul>
+
+
+        <div id="pdfViewerContainer">
+            <h3>Aperçu</h3>
+            <div id="pdfViewer">
+                <p>Sélectionnez un document pour le voir</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="m-main">
+
+        <div class="m-chat-head">
+            <a href="register.html" class="m-register-link">Inscription</a>
+        </div>
+
+        <div class="m-scroll" id="chatBox">
+            <div class="ai-row">
+                <div class="ai-icon">
+                <svg viewBox="0 -3 15 20" width="30" height="30">
+                <rect width="16" height="16" rx="8" fill="var(--accent)" />
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-weight="bold" font-size="9" dy="-1">DT</text>
+                </svg></div>
+                   <div class="ai-msg">Bonjour ! Chargez un PDF et posez-moi vos questions.</div>
+            </div>       
+        </div>
+
+        <div class="m-inputbar">
+            <div class="m-input-shell">
+                <input type="text" class="m-textarea" id="question" rows="1"
+                          placeholder="Posez une question sur le document…">
+                <button class="m-send" id="btnEnvoyer" aria-label="Envoyer">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                         stroke="currentColor" stroke-width="2.2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2L11 13"/>
+                        <path d="M22 2L15 22 11 13 2 9l20-7z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>

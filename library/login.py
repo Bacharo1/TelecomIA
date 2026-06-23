@@ -36,12 +36,17 @@ async def login(request: LoginRequest):
                         "username": resultat.username,
                         "equipe_id": resultat.equipe_id
                     }
+                else:
+                    # Sinon, mauvais identifiants ou compte inactif
+                    raise HTTPException(status_code=401, detail="Identifiants ou mot de passe incorrects")
             else:
                 # Sinon, mauvais identifiants ou compte inactif
                 raise HTTPException(status_code=401, detail="Identifiants ou mot de passe incorrects")
             
                 
     except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
         raise HTTPException(status_code=500, detail=f"Erreur serveur : {str(e)}")
 
 

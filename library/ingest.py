@@ -101,5 +101,3 @@ def ingest_file_to_db(file_path: str, use_ocr: bool = True):
         return {"status": "error", "message": str(e)}
     
     
-
-# ingest_file_to_db(r"docs/Presentation_RGPD.pdf", use_ocr=True)
