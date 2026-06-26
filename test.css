@@ -53,6 +53,39 @@
   --ok:          #5CC993;
 }
 
+/* ── Tokens : mode daltonien (Palette Okabe-Ito) ──────────────── */
+.m-app.colorblind {
+  /* Base claire pour un contraste maximal */
+  --bg:          #FFFFFF;
+  --side:        #FFFFFF;
+  --border:      #E8ECF4;
+  --text-active: #E6ECFA;
+  --text:        #1A2E5A; /* Texte très sombre */
+  --gray:        #506080;
+  
+  /* Couleurs interactives Okabe-Ito */
+  --accent:      #0072B2; /* Bleu profond Okabe-Ito */
+  --brand:       #0072B2;
+  --active:      #F7F9FC;
+  --ai-bg:       #FFFFFF;
+  --ai-border:   #E8ECF4;
+  --strong:      #0072B2;
+  --user-bg:     #0072B2;
+  --user-text:   #FFFFFF;
+  --drop-border: rgba(0, 114, 178, 0.35);
+  --prev-bg:     #F7F9FC;
+  --prev-bar:    #EEF1F7;
+  --shell-bg:    #FFFFFF;
+  --scroll:      #D4DBF0;
+  --send-bg:     #D55E00; /* Vermillon Okabe-Ito : très visible pour le bouton d'envoi */
+  --send-fg:     #FFFFFF;
+  
+  /* États (Le plus important pour les daltoniens) */
+  --ok:          #009E73; /* Vert bleuté : ne se confondra jamais avec le rouge/marron */
+}
+
+body:has(.m-app.colorblind) { background: #FFFFFF; }
+
 body:has(.m-app.dark) { background: #0B1430; }
 
 /* ================================================================

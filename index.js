@@ -14,6 +14,7 @@ const pdfViewer = document.getElementById('pdfViewer');
 const uploadText = document.getElementById('uploadText');
 const btnTheme = document.getElementById('btn-theme');
 const app = document.querySelector('.m-app');
+const btnColorblind = document.getElementById('btn-colorblind');
 
 let fichierSelectionne = null;
 
@@ -271,6 +272,10 @@ pdfFileInput.addEventListener('change', function() {
 
 btnTheme.addEventListener('click', () => { app.classList.toggle('dark');
     localStorage.setItem('theme', app.classList.contains('dark') ? 'dark' : 'light');
+});
+
+btnColorblind.addEventListener('click', () => { app.classList.toggle('colorblind');
+    localStorage.setItem('colorblind', app.classList.contains('colorblind'));
 });
 
 // --- ÉVÉNEMENTS ---
